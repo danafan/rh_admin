@@ -84,7 +84,7 @@
 	</el-table-column>
 	<el-table-column width="220" prop="create_time" label="下单时间" align="center">
 	</el-table-column>
-	<el-table-column width="220" prop="consumption_time" label="消费时间" align="center">
+	<el-table-column width="220" prop="consumption_time" label="核销时间" align="center">
 	</el-table-column>
 	<el-table-column width="220" prop="refund_time" label="退款时间" align="center">
 	</el-table-column>
