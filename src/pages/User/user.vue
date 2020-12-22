@@ -2,9 +2,6 @@
 	<div>
 		<el-card>
 			<el-form :inline="true" size="small" class="demo-form-inline">
-				<el-form-item label="用户编号：">
-					<el-input v-model="req.user_id" placeholder="输入用户编号"></el-input>
-				</el-form-item>
 				<el-form-item label="用户手机号：">
 					<el-input v-model="req.phone" placeholder="输入用户手机号"></el-input>
 				</el-form-item>
@@ -26,51 +23,60 @@
 			<el-button type="primary" size="small" @click="getList">搜索</el-button>
 		</div>
 		<el-table :data="dataObj.data" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="user_id" label="用户编号" align="center">
+			<el-table-column width="220" prop="phone" label="用户手机号" align="center">
 			</el-table-column>
 			<el-table-column width="220" prop="create_date" label="注册时间" align="center">
 			</el-table-column>
-			<el-table-column width="220" prop="phone" label="用户手机号" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="order_num" label="下单数量（单）" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="order_money" label="消费金额（元）" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="waiting_consumer" label="待核销（单）" align="center">
-			</el-table-column>
-			<el-table-column width="150" prop="waiting_consumer_money" label="待核销金额（元）" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="apply_refund" label="申请退款（单）" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="total_comment" label="评论总数" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="bad_review" label="差评数量" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="envelope" label="红包数量" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="balance" label="当前余额（元）" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="integral" label="当前积分" align="center">
-			</el-table-column>
-			<el-table-column width="180" fixed="right" label="操作" align="center">
+			<el-table-column width="220" label="订单信息" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" v-if="scope.row.comment_status == '1'" @click="setComment(scope.row.user_id,'1')">关闭评论</el-button>
-					<el-button type="text" size="small" v-if="scope.row.comment_status == '2'" @click="setComment(scope.row.user_id,'2')">开启评论</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination
-			@size-change="handleSizeChange"
-			@current-change="handleCurrentChange"
-			:current-page="req.page"
-			:pager-count="11"
-			:page-sizes="[5, 10, 15, 20]"
-			layout="total, sizes, prev, pager, next, jumper"
-			:total="dataObj.total"
-			>
-		</el-pagination>
-	</div>
+					<el-popover
+					placement="top-start"
+					title="订单信息"
+					width="200"
+					trigger="hover"
+					>
+					<div>
+						<div>下单数量/金额：9/1098</div>
+						<div>已核销/金额：8/1000</div>
+						<div>待核销/金额：1/98</div>
+						<div>已退款/金额：3/398</div>
+					</div>
+					<el-button type="text" slot="reference">查看</el-button>
+				</el-popover>
+				
+			</template>
+		</el-table-column>
+		<el-table-column width="120" prop="total_comment" label="评论总数" align="center">
+		</el-table-column>
+		<el-table-column width="120" prop="bad_review" label="差评数量" align="center">
+		</el-table-column>
+		<el-table-column width="120" prop="bad_review" label="优质评论" align="center">
+		</el-table-column>
+		<el-table-column width="120" prop="envelope" label="红包数量" align="center">
+		</el-table-column>
+		<el-table-column width="120" prop="balance" label="当前余额（元）" align="center">
+		</el-table-column>
+		<el-table-column width="120" prop="integral" label="当前积分" align="center">
+		</el-table-column>
+		<el-table-column width="180" fixed="right" label="操作" align="center">
+			<template slot-scope="scope">
+				<el-button type="text" size="small" v-if="scope.row.comment_status == '1'" @click="setComment(scope.row.user_id,'1')">关闭评论</el-button>
+				<el-button type="text" size="small" v-if="scope.row.comment_status == '2'" @click="setComment(scope.row.user_id,'2')">开启评论</el-button>
+			</template>
+		</el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination
+		@size-change="handleSizeChange"
+		@current-change="handleCurrentChange"
+		:current-page="req.page"
+		:pager-count="11"
+		:page-sizes="[5, 10, 15, 20]"
+		layout="total, sizes, prev, pager, next, jumper"
+		:total="dataObj.total"
+		>
+	</el-pagination>
+</div>
 </el-card>
 </div>
 </template>

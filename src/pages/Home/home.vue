@@ -32,7 +32,8 @@
 						<span>资金管理</span>
 					</template>
 					<el-menu-item-group>     
-						<el-menu-item index="/money_record">资金明细</el-menu-item>
+						<el-menu-item index="/money_record">账户明细</el-menu-item>
+						<el-menu-item index="/commission_record">佣金明细</el-menu-item>
 					</el-menu-item-group>
 				</el-submenu>
 				<el-submenu index="4">
@@ -41,7 +42,7 @@
 						<span>商品管理</span>
 					</template>
 					<el-menu-item-group>     
-						<el-menu-item index="/goods">商品管理</el-menu-item>
+						<el-menu-item index="/goods">套餐管理</el-menu-item>
 					</el-menu-item-group>
 				</el-submenu>
 				<el-submenu index="5">
@@ -60,6 +61,7 @@
 					</template>
 					<el-menu-item-group>     
 						<el-menu-item index="/user">用户管理</el-menu-item>
+						<el-menu-item index="/red_envelope">用户红包</el-menu-item>
 					</el-menu-item-group>
 				</el-submenu>
 				<el-submenu index="2">
@@ -69,6 +71,8 @@
 					</template>
 					<el-menu-item-group>     
 						<el-menu-item index="/store">商家管理</el-menu-item>
+						<el-menu-item index="/audit_store">审核商家</el-menu-item>
+						<el-menu-item index="/announcement">商家公告</el-menu-item>
 					</el-menu-item-group>
 				</el-submenu>
 				<el-submenu index="7">
@@ -77,15 +81,15 @@
 						<span>系统管理</span>
 					</template>
 					<el-menu-item-group>     
-						<el-menu-item index="/announcement">商家公告</el-menu-item>
-						<el-menu-item index="/red_envelope">用户红包</el-menu-item>
+						
+						
 					</el-menu-item-group>
 				</el-submenu>
 			</el-menu>
 		</el-aside>
 		<el-container>
 			<el-header class="header">
-				<!-- <div class="breadcrumb">面包屑</div> -->
+				<div class="breadcrumb">{{crumb}}</div>
 				<div class="user_set">
 					<div class="username">ranbol</div>
 					<div class="line"></div>
@@ -125,12 +129,12 @@
 		background:#fff !important;
 		display:flex;
 		align-items: center;
-		justify-content: flex-end;
-		// .breadcrumb{
-		// 	font-size: 18px;
-		// 	color: #333333;
-		// 	font-weight:600;
-		// }
+		justify-content: space-between;
+		.breadcrumb{
+			font-size: 18px;
+			color: #333333;
+			font-weight:600;
+		}
 		.user_set{
 			display: flex;
 			align-items: center;
@@ -172,7 +176,8 @@
 		data(){
 			return{
 				activeIndex:"",
-				admin_name:""
+				admin_name:"",
+				crumb:"首页",
 			}
 		},
 		created(){
@@ -183,15 +188,21 @@
 			}else{
 				this.activeIndex = tab;
 			}
+			this.crumb = this.$route.name;
 		},	
 		watch:{
 			$route(n){
+				this.crumb = n.name;
 				this.handleSelect(n.path);
 			}
 		},
 		methods:{
 			handleSelect(index){
-				this.activeIndex = index;
+				if(index == '/capital_subsidiary' || index == '/store'){
+					this.activeIndex = '/store';
+				}else{
+					this.activeIndex = index;
+				}
 			},
 			//点击退出
 			exit(){

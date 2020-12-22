@@ -2,8 +2,8 @@
 	<div>
 		<el-card>
 			<el-form :inline="true" size="small" class="demo-form-inline">
-				<el-form-item label="用户编号：">
-					<el-input v-model="req.user_id" placeholder="输入用户编号"></el-input>
+				<el-form-item label="用户手机号：">
+					<el-input v-model="req.user_id" placeholder="输入用户手机号"></el-input>
 				</el-form-item>
 				<el-form-item label="相关商家：">
 					<el-select v-model="req.store_id" filterable clearable placeholder="全部">
@@ -41,13 +41,11 @@
 			<el-button type="primary" size="small" @click="getList">搜索</el-button>
 		</div>
 		<el-table :data="dataObj.data" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="user_id" label="用户编号" align="center">
+			<el-table-column width="220" show-overflow-tooltip prop="user_name" label="用户手机号" align="center">
 			</el-table-column>
-			<el-table-column width="220" show-overflow-tooltip prop="user_name" label="用户昵称" align="center">
+			<el-table-column width="220" show-overflow-tooltip prop="comment_content" label="用户评论" align="center">
 			</el-table-column>
-			<el-table-column width="220" show-overflow-tooltip prop="comment_content" label="评论内容" align="center">
-			</el-table-column>
-			<el-table-column width="220" show-overflow-tooltip prop="reply_content" label="回复内容" align="center">
+			<el-table-column width="220" show-overflow-tooltip prop="reply_content" label="商家回复" align="center">
 			</el-table-column>
 			<el-table-column label="评论图片" align="center">
 				<template slot-scope="scope">
@@ -65,6 +63,7 @@
 			<el-table-column width="120" fixed="right" label="操作" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" v-if="scope.row.complaint_status == '1'" @click="audit(scope.row.comment_id)">审核</el-button>
+					<el-button type="text" size="small" v-if="scope.row.complaint_status == '2'" @click="setQuality(scope.row.comment_id)">设为优质</el-button>
 					<el-button type="text" size="small" v-if="scope.row.complaint_status == '4'" @click="lookDetail(scope.row.comment_id)">失败原因</el-button>
 					</template>
 				</el-table-column>
@@ -210,7 +209,7 @@ title="失败原因"
 					name:"未申诉"
 				},{
 					id:"3",
-					name:"申诉成功"
+					name:"申诉通过"
 				},{
 					id:"4",
 					name:"申诉失败"
@@ -250,7 +249,7 @@ title="失败原因"
 					comment_time:'2020-09-20 12:34:23',
 					store_name:"遇上侬火锅",
 					complaint_status:'3',
-					complaint_text:'申诉成功'
+					complaint_text:'申诉通过'
 				},{
 					comment_id:"1",
 					user_id:"1",
@@ -341,6 +340,24 @@ title="失败原因"
 			//审核弹框
 			audit(comment_id){
 				this.showAudit = true;
+			},
+			//设为优质评价
+			setQuality(){
+				this.$confirm('设为优质评价后该用户将会获得10积分，确认设置?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$message({
+						type: 'success',
+						message: '已确认'
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
+				});
 			},
 			//审核
 			auditFun(type){

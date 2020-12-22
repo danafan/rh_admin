@@ -33,7 +33,7 @@
 					>
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item label="消费时间：">
+			<el-form-item label="核销时间：">
 				<el-date-picker
 				v-model="consumption_date"
 				type="datetimerange"

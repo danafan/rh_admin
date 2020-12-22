@@ -5,13 +5,16 @@ const login = resolve=>require(['@/pages/Login/login'],resolve)
 const home = resolve=>require(['@/pages/Home/home'],resolve)
 const index = resolve=>require(['@/pages/Index/index'],resolve)
 const user = resolve=>require(['@/pages/User/user'],resolve)
+const red_envelope = resolve=>require(['@/pages/User/red_envelope'],resolve)
 const store = resolve=>require(['@/pages/Store/store'],resolve)
+const audit_store = resolve=>require(['@/pages/Store/audit_store'],resolve)
+const capital_subsidiary = resolve=>require(['@/pages/Store/capital_subsidiary'],resolve)
+const announcement = resolve=>require(['@/pages/Store/announcement'],resolve)
 const money_record = resolve=>require(['@/pages/Money/money_record'],resolve)
+const commission_record = resolve=>require(['@/pages/Money/commission_record'],resolve)
 const goods = resolve=>require(['@/pages/Goods/goods'],resolve)
 const comment = resolve=>require(['@/pages/Comment/comment'],resolve)
 const order = resolve=>require(['@/pages/Order/order'],resolve)
-const announcement = resolve=>require(['@/pages/System/announcement'],resolve)
-const red_envelope = resolve=>require(['@/pages/System/red_envelope'],resolve)
 
 Vue.use(Router)
 
@@ -28,8 +31,11 @@ const router = new Router({
     { path: '/index',name:"首页", component: index},
     { path: '/user',name:"用户管理", component: user},
     { path: '/store',name:"商家管理", component: store},
-    { path: '/money_record',name:"资金记录", component: money_record},
-    { path: '/goods',name:"商品管理", component: goods},
+    { path: '/audit_store',name:"审核商家", component: audit_store},
+    { path: '/capital_subsidiary',name:"商家资金记录", component: capital_subsidiary},
+    { path: '/money_record',name:"账户明细", component: money_record},
+    { path: '/commission_record',name:"佣金明细", component: commission_record},
+    { path: '/goods',name:"套餐管理", component: goods},
     { path: '/comment',name:"评论管理", component: comment},
     { path: '/order',name:"订单管理", component: order},
     { path: '/announcement',name:"商家公告", component: announcement},

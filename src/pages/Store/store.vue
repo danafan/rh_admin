@@ -64,7 +64,7 @@
 			</el-table-column>
 			<el-table-column width="120" label="身份证图片" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="lookImg(scope.row.user_cart_img,'2')">查看</el-button>
+					<el-button type="text" size="small" @click="lookImg(scope.row.user_cart_img,'3')">查看</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column width="120" prop="cate_name" label="经营品类" align="center">
@@ -103,7 +103,9 @@
 			</el-table-column>
 			<el-table-column width="180" fixed="right" label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small">资金记录</el-button>
+					<el-button type="text" size="small" @click="$router.push('/capital_subsidiary?store_id=1')">资金记录</el-button>
+					<el-button type="text" size="small" v-if="scope.row.is_good == '1'" @click="settingGood(scope.row)">设为优选</el-button>
+					<el-button type="text" size="small" v-if="scope.row.is_good == '2'" @click="settingGood(scope.row)">取消优选</el-button>
 					<el-button type="text" size="small" v-if="scope.row.store_status == '1'" @click="settingStore(scope.row.store_status)">禁用</el-button>
 					<el-button type="text" size="small" v-if="scope.row.store_status == '2'" @click="settingStore(scope.row.store_status)">启用</el-button>
 				</template>
@@ -216,7 +218,8 @@
 					contact:'菜鸟彪',
 					contact_phone:'13067882143',
 					operating_state:'营业中',
-					store_status:'1'
+					store_status:'1',
+					is_good:'1'
 				},{
 					store_id:"1",
 					create_date:'2020-09-20 12:34:52',
@@ -239,7 +242,8 @@
 					contact:'菜鸟彪',
 					contact_phone:'13067882143',
 					operating_state:'营业中',
-					store_status:'2'
+					store_status:'2',
+					is_good:'2'
 				}]},	
 				pickerOptions: {
 					shortcuts: [{
@@ -322,6 +326,25 @@
 				this.showImg = true;
 				this.img_list = img_list;
 			},
+			//设置优选
+			settingGood(row){
+				let is_good = row.is_good;
+				this.$confirm(`确认${is_good == '1'?'设置为优选':'解除优选'}?`, '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$message({
+						type: 'success',
+						message: '已启用!'
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消'
+					});          
+				});
+			},
 			//设置店铺（禁用、启用）
 			settingStore(status){
 				if(status == '1'){
@@ -356,7 +379,6 @@
 						});          
 					});
 				}
-				
 			}
 		}
 

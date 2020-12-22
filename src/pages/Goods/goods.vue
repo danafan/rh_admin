@@ -2,8 +2,8 @@
 	<div>
 		<el-card>
 			<el-form :inline="true" size="small" class="demo-form-inline">
-				<el-form-item label="商品编号：">
-					<el-input v-model="req.goods_id" placeholder="输入订单编号"></el-input>
+				<el-form-item label="套餐编号：">
+					<el-input v-model="req.goods_id" placeholder="输入套餐编号"></el-input>
 				</el-form-item>
 				<el-form-item label="商家名称：">
 					<el-select v-model="req.store_id" filterable clearable placeholder="不限">
@@ -48,22 +48,20 @@
 		<el-button type="primary" size="small" @click="getList">搜索</el-button>
 	</div>
 	<el-table :data="dataObj.data" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-		<el-table-column prop="goods_id" label="商品编号" align="center">
+		<el-table-column prop="goods_id" label="套餐编号" align="center">
 		</el-table-column>
-		<el-table-column width="220" show-overflow-tooltip prop="goods_name" label="商品名称" align="center">
+		<el-table-column width="220" show-overflow-tooltip prop="goods_name" label="套餐名称" align="center">
 		</el-table-column>
-		<el-table-column label="商品图片" align="center">
+		<el-table-column label="套餐图片" align="center">
 			<template slot-scope="scope">
 				<el-button type="text" size="small" @click="goodsImg">查看</el-button>
 			</template>
 		</el-table-column>
 		<el-table-column width="220" show-overflow-tooltip prop="store_name" label="所属商家" align="center">
 		</el-table-column>
-		<el-table-column width="120" prop="goods_price" label="商品价格（元）" align="center">
+		<el-table-column width="120" prop="goods_price" label="套餐价格（元）" align="center">
 		</el-table-column>
 		<el-table-column prop="sold_num" label="已售数量" align="center">
-		</el-table-column>
-		<el-table-column width="220" prop="up_shelves_date" label="上传时间" align="center">
 		</el-table-column>
 		<el-table-column width="220" prop="up_shelves_date" label="上架时间" align="center">
 		</el-table-column>
@@ -74,8 +72,9 @@
 		<el-table-column width="200" fixed="right" label="操作" align="center">
 			<template slot-scope="scope">
 				<el-button type="text" size="small" @click="getDetail(scope.row.goods_id)">套餐内容</el-button>
-				<el-button type="text" size="small" @click="Through(scope.row.goods_id)">通过</el-button>
-				<el-button type="text" size="small" @click="Refused(scope.row.goods_id)">拒绝</el-button>
+				<el-button type="text" size="small" v-if="scope.row.status == '0'" @click="Through(scope.row.goods_id)">通过</el-button>
+				<el-button type="text" size="small" v-if="scope.row.status == '0'" @click="Refused(scope.row.goods_id)">拒绝</el-button>
+				<el-button type="text" size="small" v-if="scope.row.status == '4'" @click="lookWhy(scope.row.goods_id)">原因</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -131,6 +130,7 @@
 		</div>
 	</div>
 	<div class="total_price">合计：¥168</div>
+	<div class="price">售价：¥98</div>
 	<div slot="footer" class="dialog-footer">
 		<el-button size="small" type="primary" @click="showDetail = false">关 闭</el-button>
 	</div>
@@ -139,12 +139,11 @@
 <el-dialog title="商品图片" :visible.sync="showImg">
 	<div class="dialog_box">
 		<el-carousel class="fileCon" :loop="false">
-		<el-carousel-item class="fileCon" v-for="item in banner_list" :key="item">
-			<img class="fileCon" :src="item">
-		</el-carousel-item>
-	</el-carousel>
+			<el-carousel-item class="fileCon" v-for="item in banner_list" :key="item">
+				<img class="fileCon" :src="item">
+			</el-carousel-item>
+		</el-carousel>
 	</div>
-	
 	<div slot="footer" class="dialog-footer">
 		<el-button size="small" type="primary" @click="showImg = false">关 闭</el-button>
 	</div>
@@ -172,6 +171,10 @@
 }
 .total_price{
 	color: #333;
+	font-weight: 700;
+}
+.price{
+	color: #ec722e;
 	font-weight: 700;
 }
 .dialog_box{
@@ -214,7 +217,13 @@
 					name:"已上架"
 				},{
 					id:"2",
-					name:"待上架"
+					name:"已下架"
+				},{
+					id:"3",
+					name:"审核通过"
+				},{
+					id:"4",
+					name:"审核拒绝"
 				}],								//订单状态
 				store_list:[{
 					id:"1",
@@ -234,6 +243,7 @@
 					goods_price:"98",
 					sold_num:"108",
 					down_shelves_date:"",
+					status:'0',
 					goods_status:"待审核"
 				},{
 					goods_id:"2",
@@ -243,6 +253,7 @@
 					goods_price:"98",
 					sold_num:"108",
 					down_shelves_date:"",
+					status:'1',
 					goods_status:"已上架"
 				},{
 					goods_id:"3",
@@ -252,7 +263,28 @@
 					goods_price:"98",
 					sold_num:"108",
 					down_shelves_date:"2020-09-20 12:34:52",
-					goods_status:"待上架"
+					status:'2',
+					goods_status:"已下架"
+				},{
+					goods_id:"3",
+					up_shelves_date:'2020-09-20 12:34:52',
+					goods_name:"遇上侬火锅2-4人套餐",
+					store_name:"遇上侬火锅",
+					goods_price:"98",
+					sold_num:"108",
+					down_shelves_date:"2020-09-20 12:34:52",
+					status:'3',
+					goods_status:"审核通过"
+				},{
+					goods_id:"3",
+					up_shelves_date:'2020-09-20 12:34:52',
+					goods_name:"遇上侬火锅2-4人套餐",
+					store_name:"遇上侬火锅",
+					goods_price:"98",
+					sold_num:"108",
+					down_shelves_date:"2020-09-20 12:34:52",
+					status:'4',
+					goods_status:"审核拒绝"
 				}]},	
 				pickerOptions: {
 					shortcuts: [{
@@ -366,6 +398,12 @@
 						type: 'info',
 						message: '取消输入'
 					});       
+				});
+			},
+			//查看原因 
+			lookWhy(goods_id){
+				this.$alert('这是拒绝原因', '拒绝原因', {
+					confirmButtonText: '确定'
 				});
 			}
 		}

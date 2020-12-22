@@ -18,7 +18,7 @@
       }
     },
     created(){
-      this.$router.push('/store')
+      this.$router.push('/commission_record')
       // resource.checkLogin().then(res => {
       //   if(res.data.code != 10000){
       //     let tab = sessionStorage.getItem("tab");

@@ -1,28 +1,11 @@
 <template>
 	<div>
-		<el-card>
-			<div class="title">账户信息</div>
-			<div class="info_box">
-				<div class="info_item">
-					<div class="info_title">总余额</div>
-					<div class="info_val">0.00</div>
-				</div>
-				<div class="info_item">
-					<div class="info_title">商家余额</div>
-					<div class="info_val">0.00</div>
-				</div>
-				<div class="info_item">
-					<div class="info_title">预估收益</div>
-					<div class="info_val">0.00</div>
-				</div>
-			</div>
-		</el-card>
 		<el-card style="margin-top: 20px">
 			<el-form :inline="true" size="small" class="demo-form-inline">
 				<el-form-item label="资金流水号：">
 					<el-input v-model="req.id" placeholder="输入订单编号"></el-input>
 				</el-form-item>
-				<el-form-item label="类型：">
+				<el-form-item label="变动类型：">
 					<el-select v-model="req.money_type">
 						<el-option v-for="item in money_type_list" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
@@ -45,30 +28,22 @@
 		<div class="but">
 			<el-button type="primary" size="small" @click="getList">搜索</el-button>
 		</div>
+		<div class="table_tag">
+			<div class="tag_item">账户余额：¥1000023.32</div>
+		</div>
 		<el-table :data="dataObj.data" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column width="120" prop="id" label="资金流水号" align="center">
+			<el-table-column prop="id" label="资金流水号" align="center">
 			</el-table-column>
-			<el-table-column width="120" prop="user_phone" label="用户手机号" align="center">
+			<el-table-column prop="change_desc" label="变动类型" align="center">
 			</el-table-column>
-			<el-table-column prop="order_id" label="订单编号" align="center">
+			<el-table-column prop="change_money" label="变动金额（元）" align="center">
 			</el-table-column>
-			<el-table-column width="220" show-overflow-tooltip prop="store_name" label="商家名称" align="center">
+			<el-table-column prop="time" label="变动时间" align="center">
 			</el-table-column>
-			<el-table-column prop="store_account_number" width="300" label="商家入账信息" align="center">
+			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<div v-if="scope.row.bank_name != ''">银行名称：{{scope.row.bank_name}}</div>
-					<div v-if="scope.row.bank_number != ''">银行卡号：{{scope.row.bank_number}}</div>
+					<el-button v-if="scope.row.change_type != '2' && scope.row.change_type != '3'" type="text" size="small" @click="getDetail(scope.row)">详情</el-button>
 				</template>
-			</el-table-column>
-			<el-table-column width="220" prop="time" label="变动时间" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="change_money" label="变动金额（元）" align="center">
-			</el-table-column>
-			<el-table-column prop="change_desc" label="变动说明" align="center">
-			</el-table-column>
-			<el-table-column prop="change_type" label="收支类型" align="center">
-			</el-table-column>
-			<el-table-column width="120" prop="balance" label="余额（元）" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -84,29 +59,67 @@
 		</el-pagination>
 	</div>
 </el-card>
+<!-- 详情 -->
+<el-dialog :title="dialog_title" :visible.sync="showDialog" width="30%">
+	<!-- 商户提现 -->
+	<div v-if="change_type == '0'">
+		<div class="content_row">商户名称：彪子湘菜馆</div>
+		<div class="content_row">提现金额：¥1998</div>
+		<div class="content_row">提现银行：中国工商银行</div>
+		<div class="content_row">账号：453645352635453</div>
+		<div class="content_row">提现时间：2020-09-20 12:34:24</div>
+		<div class="content_row">到账时间：2020-09-20 15:34:24</div>
+	</div>
+	<!-- 用户下单 -->
+	<div v-if="change_type == '1'">
+		<div class="content_row">订单编号：712635</div>
+		<div class="content_row">用户手机号：13067882143</div>
+		<div class="content_row">套餐名称：彪子无敌套餐</div>
+		<div class="content_row">单价：¥98</div>
+		<div class="content_row">数量：1</div>
+		<div class="content_row">红包抵扣：¥10</div>
+		<div class="content_row">积分抵扣：¥0</div>
+		<div class="content_row">余额抵扣：¥0</div>
+		<div class="content_row">实际支付：¥88</div>
+		<div class="content_row">入帐金额：¥88</div>
+		<div class="content_row">入帐时间：2020-09-20 15:34:24</div>
+	</div>
+	<!-- 系用户退款 -->
+	<div v-if="change_type == '4'">
+		<div class="content_row">订单编号：287346</div>
+		<div class="content_row">用户手机号：13067882143</div>
+		<div class="content_row">套餐名称：彪子无敌套餐</div>
+		<div class="content_row">单价：¥98</div>
+		<div class="content_row">数量：1</div>
+		<div class="content_row">红包抵扣：¥10</div>
+		<div class="content_row">积分抵扣：¥0</div>
+		<div class="content_row">余额抵扣：¥0</div>
+		<div class="content_row">实际支付：¥88</div>
+		<div class="content_row">退款金额：¥88</div>
+		<div class="content_row">申请时间：2020-09-20 15:34:24</div>
+		<div class="content_row">退款时间：2020-09-20 16:34:24</div>
+	</div>
+	<span slot="footer" class="dialog-footer">
+		<el-button type="primary" @click="showDialog = false">确 定</el-button>
+	</span>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
-.title{
-	font-weight: 700;
-	color: #333333;
-}
-.info_box{
-	margin-top: 20px;
+.table_tag{
+	margin-bottom: 5px;
 	display: flex;
 	align-items: center;
-	justify-content: space-around;
-	.info_item{
-		.info_title{
-			font-size: 16px;
-			color: #666666;
-		}
-		.info_val{
-			font-size: 26px;
-			font-weight: 700;
-			color: #333333;
-		}
+	.tag_item{
+		margin-right: 20px;
+		font-size: 16px;
+		color:#ec722e;
 	}
+}
+.content_row{
+	margin-bottom: 5px;
+	font-size: 15px;
+	color:#333;
 }
 </style>
 <script>
@@ -124,13 +137,22 @@
 				},								//请求参数
 				money_type_list:[{
 					id:"",
-					name:"不限"
+					name:"全部"
 				},{
 					id:"0",
-					name:"收入"
+					name:"商户提现"
 				},{
 					id:"1",
-					name:"支出"
+					name:"用户下单"
+				},{
+					id:"2",
+					name:"系统提现"
+				},{
+					id:"3",
+					name:"系统入帐"
+				},{
+					id:"4",
+					name:"用户退款"
 				}],		
 				date:[],					//下单时间
 				dataObj:{data:[{
@@ -141,9 +163,9 @@
 					bank_name:'中国建设银行',
 					bank_number:'18273618273618723613',
 					time:'2020-09-20 12:34:52',
-					change_money:'68',
+					change_money:'108',
 					change_desc:"商户提现",
-					change_type:'支出',
+					change_type:'0',
 					balance:'32846367.53'
 				},{
 					id:"2",
@@ -153,9 +175,45 @@
 					bank_name:'',
 					bank_number:'',
 					time:'2020-09-20 12:34:52',
-					change_money:'68',
+					change_money:'120',
 					change_desc:"用户下单",
-					change_type:'收入',
+					change_type:'1',
+					balance:'32846367.53'
+				},{
+					id:"2",
+					user_phone:"13067882143",
+					order_id:"1",
+					store_name:"",
+					bank_name:'',
+					bank_number:'',
+					time:'2020-09-20 12:34:52',
+					change_money:'120',
+					change_desc:"系统提现",
+					change_type:'2',
+					balance:'32846367.53'
+				},{
+					id:"2",
+					user_phone:"13067882143",
+					order_id:"1",
+					store_name:"",
+					bank_name:'',
+					bank_number:'',
+					time:'2020-09-20 12:34:52',
+					change_money:'120',
+					change_desc:"系统入账",
+					change_type:'3',
+					balance:'32846367.53'
+				},{
+					id:"2",
+					user_phone:"13067882143",
+					order_id:"1",
+					store_name:"",
+					bank_name:'',
+					bank_number:'',
+					time:'2020-09-20 12:34:52',
+					change_money:'120',
+					change_desc:"用户退款",
+					change_type:'4',
 					balance:'32846367.53'
 				}]},	
 				pickerOptions: {
@@ -184,7 +242,11 @@
 							picker.$emit('pick', [start, end]);
 						}
 					}]
-				}
+				},
+				showDialog:false,			//详情弹框
+				change_type:"",				//弹框内容类型（0:商户提现；1:用户下单；4:用户退款）
+				dialog_title:''
+
 			}
 		},
 		created(){
@@ -221,6 +283,24 @@
 				//获取列表
 				this.getList();
 			},
+			//详情
+			getDetail(row){
+				this.change_type = row.change_type;
+				switch(row.change_type){
+					case '0':
+						this.dialog_title = "系统提现";
+						break;
+					case '1':
+						this.dialog_title = "用户下单";
+						break;
+					case '4':
+						this.dialog_title = "用户退款";
+						break;
+					default:
+						return false;
+				}
+				this.showDialog = true;
+			}
 		}
 
 	}
